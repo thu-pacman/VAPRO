@@ -1,15 +1,15 @@
 # Vapro
 
 [![issue](https://img.shields.io/github/issues/thu-pacman/VAPRO)](https://github.com/thu-pacman/VAPRO/issues)
-![license](https://img.shields.io/github/license/thu-pacman/VAPRO)
+![license](https://img.shields.io/github/license/thu-pacman/vapro)
 
-Vapro is a light-weight performance variance detection and diagnosis tool without requiring source code of applications. It is practical for production-run parallel applications.
+Vapro is a light-weight performance variance detection and diagnosis tool without requiring the source code of applications. It is practical for production-run parallel applications.
 
 ## Get started
 
-### Dependencis
+### Dependencies
 
-- MPI consistant with applications
+- MPI consistent with applications
 - jsoncpp
 - papi
 - libunwind
@@ -33,20 +33,20 @@ We can enable Vapro by setting `LD_PRELOAD` to preload the Vapro library before 
 ```
 export LD_PRELOAD=<path_to_libpapicnt.so>
 ```
-Then, we can run the applitions dierectly. Alternatively, we can make `LD_PRELOAD` only effective on the applictions by
+Then, we can run the applications dierectly. Alternatively, we can make `LD_PRELOAD` only effective on the applications by
 ```
 LD_PRELOAD=<path_to_libpapicnt.so> mpirun ./application_command
 ```
 
-### Analyzeing resutls
-Results will be store in the current working directory. There are four classes of files for differnt information.
+### Analyzing results
+Vapro saves results in the current working directory. There are four classes of files for different information.
 
    1. log0_*: all calculation events
    2. log1_*: all communication events
    3. log2_*: relative performance data of calculation
    4. log3_*: relative performance data of communication
 
-   Asterisks in filename are corresponding MPI ranks. 
+   Asterisks in the filenames are corresponding MPI ranks. 
 
 
 ## Roadmap
