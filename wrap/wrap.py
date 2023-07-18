@@ -950,7 +950,7 @@ def fn(out, scope, args, children):
         fn_scope = Scope(scope)
         fn_scope[fn_var] = fn_name
         fn_scope['fn_id'] = -1
-	for i,name in enumerate(MPI_FUNC_INDEX):
+        for i,name in enumerate(MPI_FUNC_INDEX):
             if name==fn_name:
                 fn_scope['fn_id']=i
         # # debug

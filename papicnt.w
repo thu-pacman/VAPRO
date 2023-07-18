@@ -47,10 +47,11 @@
 // This is a communicator that will contain the first 48 out of
 // every 64 ranks in the applicatPAPI failed to read countersion.
 //static MPI_Comm world48;
-static int rank, size, fd;
-static volatile int *addr;
-static int *addr_nonvol;
-static int cnt_send;
+static int rank;
+// static int rank, size, fd;
+// static volatile int *addr;
+// static int *addr_nonvol;
+// static int cnt_send;
 
 struct Timestamp
 {
@@ -65,7 +66,9 @@ extern int trace_size;
 inline void get_backtrace()
 {
     if (vertex_type!=VertexType::Function)
-        trace_size = unw_backtrace(backtrace_buffer, (vertex_type==VertexType::CallSite)?3:10);
+    // todo: revert his
+    // trace_size = unw_backtrace(backtrace_buffer, (vertex_type==VertexType::CallSite)?4:10);
+    trace_size = unw_backtrace(backtrace_buffer, 10);
 }
 
 
@@ -97,11 +100,14 @@ int consumeTime(int k)
 //
 {{fn func MPI_Init}}{
     get_backtrace();
-    papi_init();
+    //papi_init();
     {{callfn}}
-    fprintf(stderr,"Shared library loaded..\n");
-    papi_update(1, {{fn_id}}, 0, 0, nullptr);
     PMPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    papi_update(1, {{fn_id}}, 0, 0, nullptr);
+    if (rank==0)
+    {
+        fprintf(stderr,"Vapro library loaded\n");
+    }
 }{{endfn}}
 // __attribute_noinline__ void papi_update
 //(int suffix, int mpi_func, int count, int target, void *mpi_comm)
@@ -109,13 +115,16 @@ int consumeTime(int k)
 {{fn func MPI_Finalize}}{
     get_backtrace();
     papi_update(0, {{fn_id}}, 0, 0, nullptr);
-    {{callfn}}
     //if (rank==0)
     print_graph(rank);
+    PMPI_Barrier(MPI_COMM_WORLD);
+    {{callfn}}
 
 }{{endfn}}
 
 {{fn func MPI_Send}}{
+    // debug
+    // sleep(1);
     get_backtrace();
     papi_update(0, {{fn_id}}, {{1}}, {{3}}, (void*){{5}});
     {{callfn}}
@@ -136,11 +145,60 @@ int consumeTime(int k)
     papi_update(1, {{fn_id}}, {{1}}, {{3}}, (void*){{5}});
 }{{endfn}}
 
+{{fn func MPI_File_read_at_all}}{
+    get_backtrace();
+    papi_update(0, {{fn_id}}, {{3}}, 0, {{0}});
+    {{callfn}}
+    papi_update(1, {{fn_id}}, {{3}}, 0, {{0}});
+}{{endfn}}
+
+{{fn func MPI_File_write_at_all}}{
+    get_backtrace();
+    papi_update(0, {{fn_id}}, {{3}}, 0, (void*)(long){{0}});
+    {{callfn}}
+    papi_update(1, {{fn_id}}, {{3}}, 0, (void*)(long){{0}});
+}{{endfn}}
+
+{{fn func MPI_Allreduce}}{
+    get_backtrace();
+    // PMPI_Barrier({{5}});
+    papi_update(0, {{fn_id}}, 0, 0, nullptr);
+    {{callfn}}
+    papi_update(1, {{fn_id}}, 0, 0, nullptr);
+}{{endfn}}
+
+{{fn func MPI_Alltoall}}{
+    get_backtrace();
+    // {{1}} sendcount, 0 is destination (to the same group), 6 is communicator
+    papi_update(0, {{fn_id}}, {{1}}, 0, (void*){{6}});
+    {{callfn}}
+    papi_update(1, {{fn_id}}, {{1}}, 0, (void*){{6}});
+}{{endfn}}
+
+{{fn func MPI_File_read_at}}{
+    get_backtrace();
+    // {{3}} count, 0 is destination (to the same group), 6 is file handler
+    papi_update(0, {{fn_id}}, {{3}}, 0, (void*){{0}});
+    {{callfn}}
+    papi_update(1, {{fn_id}}, {{3}}, 0, (void*){{0}});
+}{{endfn}}
+
+{{fn func MPI_File_write_at}}{
+    get_backtrace();
+    // {{3}} count, 0 is destination (to the same group), 6 is file handler
+    papi_update(0, {{fn_id}}, {{3}}, 0, (void*){{0}});
+    {{callfn}}
+    papi_update(1, {{fn_id}}, {{3}}, 0, (void*){{0}});
+}{{endfn}}
+
 // This generates interceptors that will catch every MPI routine
 // *except* MPI_Init.  The interceptors just make sure that if
 // they are called with an argument of type MPI_Comm that has a
 // value of MPI_COMM_WORLD, they switch it with world48.
-{{fnall func MPI_Init MPI_Finalize MPI_Init_thread MPI_Initialized MPI_Send MPI_Recv MPI_Irecv}}{
+// {{fnall func MPI_Init MPI_Finalize MPI_Init_thread MPI_Initialized MPI_Send MPI_Recv MPI_Irecv MPI_Barrier MPI_Wait MPI_File_read_at_all MPI_File_write_at_all MPI_Allreduce MPI_Alltoall MPI_File_read_at MPI_File_write_at}}{
+// debug: exclude Testall an Iprobe
+//{{fnall func MPI_Init MPI_Finalize MPI_Init_thread MPI_Initialized MPI_Send MPI_Recv MPI_Irecv MPI_File_read_at_all MPI_File_write_at_all MPI_Allreduce MPI_Alltoall MPI_File_read_at MPI_File_write_at}}{
+{{fnall func MPI_Init MPI_Finalize MPI_Init_thread MPI_Initialized MPI_Send MPI_Recv MPI_Irecv MPI_File_read_at_all MPI_File_write_at_all MPI_Allreduce MPI_Alltoall MPI_File_read_at MPI_File_write_at MPI_Iprobe MPI_Testall MPI_Initialized MPI_Finalized}}{
     get_backtrace();
     papi_update(0, {{fn_id}}, 0, 0, nullptr);
     {{callfn}}

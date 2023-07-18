@@ -3,6 +3,7 @@
 //
 
 #include <algorithm>
+#include <map>
 #include "clustering.h"
 #define getv(k) (mixed_paths[k].papi[I_PAPI_TOT_INS])
 
@@ -86,3 +87,22 @@ vector<vector<DataType>> comm_classify_fake(vector<DataType> &mixed_paths)
 {
     return vector<vector<DataType>>{mixed_paths};
 }
+
+vector<vector<DataType>> comm_classify(vector<DataType> &mixed_paths)
+{
+    map<Comm_key, vector<DataType>> classified_paths;
+    for (const auto &data:mixed_paths)
+    {
+        const Comm_key key = data.to_comm_key();
+        if (classified_paths.count(key) == 0)
+        {
+            classified_paths[key] = vector<DataType>{};
+        }
+        classified_paths[key].push_back(data);
+    }
+    vector<vector<DataType>> ret;
+    for (const auto &kv:classified_paths)
+        ret.push_back(kv.second);
+    return ret;
+}
+
