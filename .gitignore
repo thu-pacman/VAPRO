@@ -11,3 +11,4 @@ CTestTestfile.cmake
 cmake-build-debug
 .idea
 wrap/examples/build
+build
