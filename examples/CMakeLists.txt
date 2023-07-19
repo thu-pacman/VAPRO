@@ -1,0 +1,10 @@
+message("subdirectory")
+
+add_executable(example_mpi_program example_mpi_program.cpp)
+target_link_libraries(example_mpi_program)
+
+add_executable(microbenchmark_loop microbenchmark_loop.cpp)
+target_link_libraries(microbenchmark_loop)
+
+add_executable(microbenchmark_pair_send microbenchmark_pair_send.cpp)
+target_link_libraries(microbenchmark_pair_send)
