@@ -1,7 +1,7 @@
-#include <iostream>
-#include <cmath>
-#include <mpi.h>
 #include <cassert>
+#include <cmath>
+#include <iostream>
+#include <mpi.h>
 #include <random>
 
 // enum communication
@@ -17,8 +17,7 @@ double calc_time = 1;
 
 int mpi_size, mpi_rank, mpi_size_per_node;
 double start_time, start_time2, end_time;
-struct Timestamp
-{
+struct Timestamp {
     double before_calc, before_comm, before_PMPI, after_comm;
 } local_time[MAX_LOOPS];
 int cnt_iter;
@@ -38,11 +37,9 @@ std::minstd_rand rand_engine;
 //     return x+y+z;
 // }
 
-int calc_smallop()
-{
+int calc_smallop() {
     int x = 1, y = 2, z = 3;
-    for (int i = 0; i < 100000; ++i)
-    {
+    for (int i = 0; i < 100000; ++i) {
         z = x * y;
         x = y * z;
         y = x * z;
@@ -54,27 +51,22 @@ int calc_op() // cost 0.6s
 {
     int t;
     int sum = 0;
-    for (int i = 0; i < 20 * calc_time / 0.6; ++i)
-    {
+    for (int i = 0; i < 20 * calc_time / 0.6; ++i) {
         t = calc_smallop();
         sum += t;
     }
     return sum;
 }
 
-void calc()
-{
+void calc() {
     calc_result[0] = 0;
     // DEBUG: skewed overload
     static int cnt = 0;
     ++cnt;
     int r = 0;
-    if (mpi_rank < 128)
-    {
+    if (mpi_rank < 128) {
         r = loop_len * 40 / (cnt / 10 + 4);
-    }
-    else
-    {
+    } else {
         r = loop_len * 40 / (0 + 4);
     }
     for (int i = 0; i < r; ++i)
@@ -85,19 +77,18 @@ void calc()
     }
 }
 
-void comm(int iter)
-{
+void comm(int iter) {
     cnt_iter = iter;
-//    fprintf(stderr, "rank=%d target rank=%d\n", mpi_rank, mpi_rank + mpi_size_per_node);
+//    fprintf(stderr, "rank=%d target rank=%d\n", mpi_rank, mpi_rank +
+//    mpi_size_per_node);
 #ifdef SEND_RECV
-    if (mpi_rank < mpi_size_per_node)
-    {
-        MPI_Send(calc_result, send_size, MPI_DOUBLE, mpi_rank + mpi_size_per_node, 0, MPI_COMM_WORLD);
-    }
-    else
-    {
+    if (mpi_rank < mpi_size_per_node) {
+        MPI_Send(calc_result, send_size, MPI_DOUBLE,
+                 mpi_rank + mpi_size_per_node, 0, MPI_COMM_WORLD);
+    } else {
         MPI_Status status;
-        MPI_Recv(recv_buffer, send_size, MPI_DOUBLE, mpi_rank - mpi_size_per_node, 0, MPI_COMM_WORLD, &status);
+        MPI_Recv(recv_buffer, send_size, MPI_DOUBLE,
+                 mpi_rank - mpi_size_per_node, 0, MPI_COMM_WORLD, &status);
     }
 #else // ALL_REDUCE
     MPI_Allreduce(calc_result, recv_buffer, send_size, MPI_DOUBLE, MPI_SUM,
@@ -105,10 +96,8 @@ void comm(int iter)
 #endif
 }
 
-int main(int argc, char *argv[])
-{
-    if (argc != 4)
-    {
+int main(int argc, char *argv[]) {
+    if (argc != 4) {
         std::cerr << argv[0] << " <send_size> <calc_time> <iterations>\n";
         return -1;
     }
@@ -130,8 +119,7 @@ int main(int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     start_time2 = MPI_Wtime();
 
-    for (int i = 0; i < cnt_loops; ++i)
-    {
+    for (int i = 0; i < cnt_loops; ++i) {
         //    fprintf(stderr,"start calc %d\n",i);//DEBUG
         local_time[i].before_calc = MPI_Wtime();
         calc();
@@ -150,11 +138,11 @@ int main(int argc, char *argv[])
     MPI_Datatype types[1] = {MPI_DOUBLE};
     MPI_Type_create_struct(1, length, disp, types, &mpi_timestamp);
     MPI_Type_commit(&mpi_timestamp);
-    if (mpi_rank == 0)
-    {
+    if (mpi_rank == 0) {
         fprintf(stderr, "End-to-end time: %lf\n", end_time - start_time);
         // fprintf(stdout, "Wall time: %lf\n", end_time - start_time);
-        fprintf(stderr, "Time starting with iteration 3: %lf\n", end_time - local_time[2].before_calc);
+        fprintf(stderr, "Time starting with iteration 3: %lf\n",
+                end_time - local_time[2].before_calc);
     }
     MPI_Finalize();
     // fprintf(stderr, "Rank %d finalized.\n", mpi_rank);
