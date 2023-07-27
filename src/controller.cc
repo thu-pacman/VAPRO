@@ -3,6 +3,7 @@
 namespace vapro {
 
 Controller::Controller() {
+    printf("construct\n");
     collectors.emplace_back(std::make_unique<CollectorPapi>());
 }
 

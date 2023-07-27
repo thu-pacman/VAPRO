@@ -6,7 +6,7 @@ namespace vapro {
 const string metricTotalInst("TOT_INST"), metricTSC("TSC");
 class CollectorPapi : public Collector {
 
-    MetricVec allMetrics = {metricTotalInst, metricTSC};
+    MetricVec allMetrics = {metricTotalInst, metricTSC};int EventSet;
 
   public:
     CollectorPapi();
