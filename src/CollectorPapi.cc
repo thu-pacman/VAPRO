@@ -42,7 +42,7 @@ DataVec CollectorPapi::readData() {
     // TODO: read data by the PAPI library. Refer to papi_get_data() in
     // deprecated/pmc.cpp.
     DataVec dtvc;
-    //int EventSet=PAPI_NULL;
+    //int EventSet=PAPI_NULL;   
     long long int values[2], values1[2], values2[2];
     int retval=0;  
     /*
