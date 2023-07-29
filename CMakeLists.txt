@@ -7,6 +7,7 @@ find_package(MPI REQUIRED)
 include_directories(${MPI_INCLUDE_PATH})
 
 include_directories(include)
+include_directories(3rd-party/dbg-macro)
 # Required packages: libunwind, papi, jsoncpp
 
 SET(CMAKE_C_COMPILER mpicc)

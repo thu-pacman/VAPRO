@@ -12,7 +12,7 @@ class Controller {
   public:
     Controller();
 
-    void readData();
+    DataVec readData();
 };
 
 } // namespace vapro
