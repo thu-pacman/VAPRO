@@ -34,13 +34,13 @@ int main() {
     // test0();
     Controller controller;
 
-    DataVec d1, d2, d3, d4, d5, d6;
+    DataVec d1, d2, d3, d4, d5, d6, d7, d8;
 
-    const int N = 1000000;
+    const int N = 10000000000;
 
-    int test_data[N];
+    int *test_data = new int[N];
 
-    int test_index[N];
+    int *test_index = new int[N];
 
     for (int i = 0; i < N; i++) {
         test_data[i] = i;
@@ -57,14 +57,16 @@ int main() {
     result(d1, d2);
 
     // TOOD: compare the whether the printed data matches your expectation
-
+    for (int i = 0; i < N; i++) {
+        test_data[i] = i;
+    }
     d3 = controller.readData();
     workload(test_data, test_index, N);
     d4 = controller.readData();
     result(d3, d4);
-    printf("%d %d %d %d %d %d %d %d\n", test_index[0], test_index[1],
-           test_index[2], test_index[3], test_index[4], test_index[5],
-           test_index[6], test_index[7]);
+    
+    //以下为非顺序访问测试
+
     for (int i = 0; i < N; i++) {
         test_data[i] = i;
         test_index[i] = i;
@@ -75,9 +77,16 @@ int main() {
     workload(test_data, test_index, N);
     d6 = controller.readData();
     result(d5, d6);
-    printf("%d %d %d %d %d %d %d %d\n", test_index[0], test_index[1],
-           test_index[2], test_index[3], test_index[4], test_index[5],
-           test_index[6], test_index[7]);
+
+    for (int i = 0; i < N; i++) {
+        test_data[i] = i;
+        test_index[i] = i;
+    }
+
+    d7 = controller.readData();
+    workload(test_data, test_index, N);
+    d8 = controller.readData();
+    result(d7, d8);
 
     printf("end test\n");
     return 0;
