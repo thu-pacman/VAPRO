@@ -3,23 +3,23 @@
 #include "stdio.h"
 using namespace vapro;
 
-void create_index(int *arr, int len) {
-    int i, j, temp;
-    for (i = 0; i < len; i++) {
-        if (i % 2 == 0) {
-            arr[i] = len - 1 - i;
-        }
-    }
-    for (i = 0; i < len; i++) {
-        if (i % 5 == 0) {
-            arr[i] = len - 1 - i;
-        }
-    }
+void create_index(std::vector<int>& arr, int len) {  
+   int i, j, temp;  
+   for (i = 0; i < len; i++) {  
+       if (i % 2 == 0) {  
+           arr[i] = len - 1 - i;  
+       }  
+   }  
+   for (i = 0; i < len; i++) {  
+       if (i % 5 == 0) {  
+           arr[i] = len - 1 - i;  
+       }  
+   }  
 }
-void workload(int *a, int *b, int n) {
-    for (int i = 0; i < n; i++) {
-        a[b[i]] = a[b[i]] * a[b[i]];
-    }
+void workload(std::vector<int>& a, std::vector<int>& b, int n) {  
+   for (int i = 0; i < n; i++) {  
+       a[b[i]] = a[b[i]] * a[b[i]];  
+   }  
 }
 
 void result(DataVec d1, DataVec d2) {
@@ -38,10 +38,9 @@ int main() {
 
     const int N = 10000000000;
 
-    int *test_data = new int[N];
+    std::vector<int> test_data(N);
 
-    int *test_index = new int[N];
-
+    std::vector<int> test_index(N);
     for (int i = 0; i < N; i++) {
         test_data[i] = i;
         test_index[i] = i;
@@ -99,5 +98,5 @@ int main() {
 // make
 //./test_vapro
 
-// source /opt/spack/share/spack/setup-env.sh;spack load openmpi@4.1.5;spack
-// load papi;cmake ..;make;./test_vapro
+// source /opt/spack/share/spack/setup-env.sh;spack load openmpi@4.1.5;
+// spack load papi;cmake ..;make;./test_vapro
