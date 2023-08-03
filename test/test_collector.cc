@@ -3,29 +3,42 @@
 #include "stdio.h"
 using namespace vapro;
 
-void create_index(std::vector<int>& arr, int len) {  
-   int i, j, temp;  
-   for (i = 0; i < len; i++) {  
-       if (i % 2 == 0) {  
-           arr[i] = len - 1 - i;  
-       }  
-   }  
-   for (i = 0; i < len; i++) {  
-       if (i % 5 == 0) {  
-           arr[i] = len - 1 - i;  
-       }  
-   }  
+void create_index(std::vector<int> &arr, int len) {
+    int i, j, temp;
+    for (i = 0; i < len; i++) {
+        if (i % 2 == 0) {
+            arr[i] = len - 1 - i;
+        }
+    }
+    for (i = 0; i < len; i++) {
+        if (i % 5 == 0) {
+            arr[i] = len - 1 - i;
+        }
+    }
 }
-void workload(std::vector<int>& a, std::vector<int>& b, int n) {  
-   for (int i = 0; i < n; i++) {  
-       a[b[i]] = a[b[i]] * a[b[i]];  
-   }  
+void workload(std::vector<int> &a, std::vector<int> &b, int n) {
+    for (int i = 0; i < n; i++) {
+        a[b[i]] = a[b[i]] * a[b[i]];
+    }
 }
 
 void result(DataVec d1, DataVec d2) {
     printf("TOT_INS:%ld\n", d2[0] - d1[0]);
     printf("TOT_CM:%ld\n", d2[1] - d1[1]);
     printf("TOT_TIME:%ld\n", d2[2] - d1[2]);
+}
+
+void testController() {
+    // TODO: the current test case should look like this
+    // controller.EnterExternal()
+    // Send()
+    // controller.EnterExternal()
+
+    // Computation workload
+
+    // controller.EnterExternal()
+    // Recv
+    // controller.EnterExternal()
 }
 
 int main() {
@@ -63,8 +76,8 @@ int main() {
     workload(test_data, test_index, N);
     d4 = controller.readData();
     result(d3, d4);
-    
-    //以下为非顺序访问测试
+
+    // 以下为非顺序访问测试
 
     for (int i = 0; i < N; i++) {
         test_data[i] = i;
