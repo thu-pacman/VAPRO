@@ -11,11 +11,7 @@
         }                                                                      \
     }
 
-static __inline__ unsigned long long rdtsc() {
-    unsigned hi, lo;
-    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
-    return ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
-}
+
 
 namespace vapro {
 CollectorPapi::CollectorPapi() {
@@ -33,15 +29,16 @@ CollectorPapi::CollectorPapi() {
 }
 
 DataVec CollectorPapi::readData() {
-    DataVec dtvc;
-    long long int values[2];
+    DataVec datavec;
+    long long int values[3];
     int retval = 0;
     checkPapi(PAPI_read(EventSet, values));
 
-    dtvc.emplace_back(values[0]);
-    dtvc.emplace_back(values[1]);
-    dtvc.emplace_back(rdtsc());
-    return dtvc;
+    datavec.emplace_back(values[0]);
+    datavec.emplace_back(values[1]);
+    datavec.emplace_back(values[2]);
+    time=rdtsc();
+    return datavec;
 }
 
 StoreKey CollectorPapi::getKey() {

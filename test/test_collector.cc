@@ -1,10 +1,18 @@
 #include "controller.h"
 #include "papi.h"
-#include "stdio.h"
+#include <cstdio>
+#include <linux/kernel.h>
+#include <execinfo.h>
+#include <iostream>  
+#include <string>  
+#include <cstdio>  
+#include <cstdlib>
+using namespace std;
+
 using namespace vapro;
 
 void create_index(std::vector<int> &arr, int len) {
-    int i, j, temp;
+    int i;
     for (i = 0; i < len; i++) {
         if (i % 2 == 0) {
             arr[i] = len - 1 - i;
@@ -26,6 +34,17 @@ void result(DataVec d1, DataVec d2) {
     printf("TOT_INS:%ld\n", d2[0] - d1[0]);
     printf("TOT_CM:%ld\n", d2[1] - d1[1]);
     printf("TOT_TIME:%ld\n", d2[2] - d1[2]);
+    printf("PAPI_TIME:%ld\n", d2[3] - d1[3]);
+}
+
+void func1(void);
+void func2(void);
+void func3(void);
+
+
+void test_workload()
+{
+    func1();
 }
 
 void testController() {
@@ -38,67 +57,87 @@ void testController() {
 
     // controller.EnterExternal()
     // Recv
+    // std::cout
     // controller.EnterExternal()
 }
+
+void func1()
+{
+    printf("1");
+    func2();
+}
+
+void func2()
+{
+    printf("2");
+    func3();
+}
+void func3()
+{
+    printf("3\n");
+}
+
+
+
 
 int main() {
 
     printf("begin test\n");
-    // test0();
+    // TODO: the current test case should look like this
+
+    // controller.EnterExternal()
+
+    // Send()
+
+    // controller.LeaveExternal();
+
+
+    // Computation workload
+
+    // controller.EnterExternal()
+
+    // Recv()
+    // controller.LeaveExternal();
+
+    int a[100];
+    for(int i=0;i<100;i++)
+    {
+        a[i]=i;
+    }
+
     Controller controller;
 
-    DataVec d1, d2, d3, d4, d5, d6, d7, d8;
+    test_workload();
 
-    const int N = 10000000000;
+    auto d1=controller.enterExternal();
+    
+    controller.datastore.showdata();
 
-    std::vector<int> test_data(N);
+    
 
-    std::vector<int> test_index(N);
-    for (int i = 0; i < N; i++) {
-        test_data[i] = i;
-        test_index[i] = i;
+    controller.leaveExternal(d1);
+
+    controller.datastore.showdata();
+
+    test_workload();
+    for(int i=1;i<100;i++)
+    {
+        a[i]=a[i]+a[i-1];
     }
 
-    // 完成CollectorPapi.cc中的TODO。利用PAPI采集PAPI_TOT_INS，即程序片段的总指令数。如果遇到采集出来为0，或者出错，可能和系统的权限相关，可以来问下我。
 
-    // This readData function will print the performance data
-    d1 = controller.readData();
-    // TODO: add some workload here for profiling
-    workload(test_data, test_index, N);
-    d2 = controller.readData();
-    result(d1, d2);
+    auto d2=controller.enterExternal();
 
-    // TOOD: compare the whether the printed data matches your expectation
-    for (int i = 0; i < N; i++) {
-        test_data[i] = i;
+    controller.datastore.showdata();
+    for(int i=90;i<100;i++)
+    {
+        std::cout << a[i];
     }
-    d3 = controller.readData();
-    workload(test_data, test_index, N);
-    d4 = controller.readData();
-    result(d3, d4);
+    std::cout << endl;
 
-    // 以下为非顺序访问测试
+    controller.leaveExternal(d2);
 
-    for (int i = 0; i < N; i++) {
-        test_data[i] = i;
-        test_index[i] = i;
-    }
-    create_index(test_index, N);
-
-    d5 = controller.readData();
-    workload(test_data, test_index, N);
-    d6 = controller.readData();
-    result(d5, d6);
-
-    for (int i = 0; i < N; i++) {
-        test_data[i] = i;
-        test_index[i] = i;
-    }
-
-    d7 = controller.readData();
-    workload(test_data, test_index, N);
-    d8 = controller.readData();
-    result(d7, d8);
+    controller.datastore.showdata();
 
     printf("end test\n");
     return 0;
@@ -110,6 +149,6 @@ int main() {
 // cmake ..
 // make
 //./test_vapro
-
-// source /opt/spack/share/spack/setup-env.sh;spack load openmpi@4.1.5;
+// source /opt/spack/share/spack/setup-env.sh;spack load /awa3vt5
+// spack load openmpi@4.1.5;
 // spack load papi;cmake ..;make;./test_vapro

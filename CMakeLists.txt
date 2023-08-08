@@ -14,6 +14,11 @@ SET(CMAKE_C_COMPILER mpicc)
 SET(CMAKE_CXX_COMPILER mpicxx)
 set(CMAKE_CXX_STANDARD 17)
 
+#if(CMAKE_BUILD_TYPE MATCHES "Release")  
+# set(CMAKE_CXX_COMPILER_OPTIONS "-O3")  
+#set(CMAKE_C_COMPILER_OPTIONS "-O3")  
+#endif()
+
 
 SET(CMAKE_CXX_FLAGS "-Wall -g")
 SET(CMAKE_SHARED_LINKER_FLAGS "-g")
@@ -36,3 +41,4 @@ target_link_libraries(test_vapro vapro)
 if (BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
+

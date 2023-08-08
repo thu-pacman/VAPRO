@@ -9,8 +9,9 @@ class CollectorPapi : public Collector {
 
     MetricVec allMetrics = {metricTotalInst, metricTSC};
     int EventSet;
-
+    
   public:
+    unsigned long long time;
     CollectorPapi();
     MetricVec getAvailableMetric() const override { return allMetrics; }
     MetricVec getEnabledMetric() const override { return allMetrics; }
