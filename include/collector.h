@@ -1,5 +1,5 @@
 #pragma once
-#include <common.h>
+#include "common.h"
 #include <iostream>
 
 namespace vapro {
@@ -8,20 +8,18 @@ using MetricVec = vector<string>;
 using DataVec = vector<uint64_t>;
 
 class StoreKey {
-    public:
-    
+
+  private:
     bool isComputation;
     uint64_t address;
-    
-    StoreKey(bool isc,uint64_t add):isComputation(isc),address(add){}
 
-    friend bool operator <(const StoreKey a,const StoreKey b);
+  public:
+    StoreKey(bool isc, uint64_t add) : isComputation(isc), address(add) {}
+    friend bool operator<(const StoreKey a, const StoreKey b);
 
-
-    //区分是否是计算，储存地址
+    bool getisComputation() const;
+    uint64_t getaddress() const;
 };
-
-
 
 class Collector {
   public:
@@ -34,7 +32,7 @@ class Collector {
     virtual StoreKey getKey() = 0;
     virtual DataVec readData() = 0;
 
-    Collector(){}
+    Collector() {}
     DataVec data;
 
   private:

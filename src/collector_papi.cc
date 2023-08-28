@@ -11,8 +11,6 @@
         }                                                                      \
     }
 
-
-
 namespace vapro {
 CollectorPapi::CollectorPapi() {
     int retval = 0;
@@ -30,14 +28,14 @@ CollectorPapi::CollectorPapi() {
 
 DataVec CollectorPapi::readData() {
     DataVec datavec;
-    long long int values[3];
+    long long int values[2];
     int retval = 0;
     checkPapi(PAPI_read(EventSet, values));
 
     datavec.emplace_back(values[0]);
     datavec.emplace_back(values[1]);
-    datavec.emplace_back(values[2]);
     time=rdtsc();
+    datavec.emplace_back(time);
     return datavec;
 }
 

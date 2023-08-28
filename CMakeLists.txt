@@ -29,16 +29,28 @@ SET(CMAKE_SHARED_LINKER_FLAGS "-g")
 # link_directories(${CMAKE_SOURCE_DIR}/jevents)
 
 # add_wrapped_file(papicnt.cpp papicnt.w)
-file(GLOB_RECURSE SRC_Vapro src/*.cc)
+file(GLOB_RECURSE SRC_Vapro src/*.cc src/*.cpp)
 
 add_library(vapro SHARED ${SRC_Vapro})
 target_link_libraries(vapro ${MPI_CXX_LIBRARIES} papi)
 # target_link_libraries(vapro ${MPI_CXX_LIBRARIES} unwind unwind-x86_64 papi jsoncpp jevents)
 
-add_executable(test_vapro test/test_collector.cc)
-target_link_libraries(test_vapro vapro)
+# add_library(libvapro SHARED ${SRC_Vapro})  
+# target_link_libraries(vapro ${MPI_CXX_LIBRARIES} papi)
 
-if (BUILD_EXAMPLES)
-    add_subdirectory(examples)
-endif()
 
+# target_include_directories(/home/jyh/1/VAPRO/jsoncpp/build/lib)  
+# target_link_libraries(/home/jyh/1/VAPRO/jsoncpp/build/lib/libjsoncpp.so)  
+# add_executable(1 test/1.cpp)
+# add_executable(test_vapro test/test_collector.cc)
+# target_link_libraries(test_vapro vapro)
+# 
+# 
+# 
+# 
+# 
+# 
+# if (BUILD_EXAMPLES)
+#     add_subdirectory(examples)
+# endif()
+# 

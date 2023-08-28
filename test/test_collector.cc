@@ -114,7 +114,6 @@ int main() {
     controller.datastore.showdata();
 
     
-
     controller.leaveExternal(d1);
 
     controller.datastore.showdata();
@@ -149,6 +148,30 @@ int main() {
 // cmake ..
 // make
 //./test_vapro
+
 // source /opt/spack/share/spack/setup-env.sh;spack load /awa3vt5
-// spack load openmpi@4.1.5;
 // spack load papi;cmake ..;make;./test_vapro
+
+// spack load openmpi@4.1.5;
+// python wrap.py -f -o mywrap.cc mywrap.w
+// g++ -shared -fPIC warpper.cpp -o warpper.so
+// export LD_PRELOAD=/home/jyh/1/VAPRO/src/warpper.so
+// unset LD_PRELOAD
+
+// python wrap.py -f -o mywrap.cc mywrap.w
+// g++ -shared -fPIC mywrap.cc -o mywrap.so
+// 
+// export LD_PRELOAD=/home/jyh/1/VAPRO/build/libvapro.so
+// mpic++ mpi.o -o mpi;mpic++ -c mpi.cpp -o mpi.o
+// mpirun -np 4 ./mpi
+// unset LD_PRELOAD
+
+// export LD_PRELOAD=/home/jyh/1/VAPRO/build/libvapro.so
+// mpic++ -c example_mpi_program.cpp -o example.o;mpic++ example.o -o example;
+// mpirun -np 4 ./example 5 5 5
+// unset LD_PRELOAD
+// jyh@nico0:~/1/VAPRO$ python3 -m venv --without-pip myvapro
+// jyh@nico0:~/1/VAPRO$ source myvapro/bin/activate
+// mpirun -np 4 ./example 9 9 9
+
+// source /opt/spack/share/spack/setup-env.sh;spack load /awa3vt5;spack load papi
