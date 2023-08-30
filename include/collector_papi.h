@@ -1,19 +1,23 @@
 #pragma once
-#include <collector.h>
+#include "collector.h"
 
 namespace vapro {
 
 const string metricTotalInst("TOT_INST"), metricTSC("TSC");
+
 class CollectorPapi : public Collector {
 
     MetricVec allMetrics = {metricTotalInst, metricTSC};
-
+    int EventSet;
+    
   public:
+    unsigned long long time;
     CollectorPapi();
-    virtual MetricVec getAvailableMetric() const { return allMetrics; }
-    virtual MetricVec getEnabledMetric() const { return allMetrics; }
-    virtual MetricVec setMetric() { IT_TODO_HALT(); }
-    virtual DataVec readData();
+    MetricVec getAvailableMetric() const override { return allMetrics; }
+    MetricVec getEnabledMetric() const override { return allMetrics; }
+    MetricVec setMetric() override { IT_TODO_HALT(); }
+    DataVec readData() override;
+    StoreKey getKey() override;
 };
 
 } // namespace vapro

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <mpi.h>
 #include <random>
+#include <stdio.h>
 
 // enum communication
 //{
@@ -81,7 +82,7 @@ void comm(int iter) {
     cnt_iter = iter;
 //    fprintf(stderr, "rank=%d target rank=%d\n", mpi_rank, mpi_rank +
 //    mpi_size_per_node);
-#ifdef SEND_RECV
+
     if (mpi_rank < mpi_size_per_node) {
         MPI_Send(calc_result, send_size, MPI_DOUBLE,
                  mpi_rank + mpi_size_per_node, 0, MPI_COMM_WORLD);
@@ -90,10 +91,8 @@ void comm(int iter) {
         MPI_Recv(recv_buffer, send_size, MPI_DOUBLE,
                  mpi_rank - mpi_size_per_node, 0, MPI_COMM_WORLD, &status);
     }
-#else // ALL_REDUCE
-    MPI_Allreduce(calc_result, recv_buffer, send_size, MPI_DOUBLE, MPI_SUM,
-                  MPI_COMM_WORLD);
-#endif
+
+    //MPI_Allreduce(calc_result, recv_buffer, send_size, MPI_DOUBLE, MPI_SUM,MPI_COMM_WORLD);
 }
 
 int main(int argc, char *argv[]) {
@@ -103,7 +102,6 @@ int main(int argc, char *argv[]) {
     }
     MPI_Init(nullptr, nullptr);
     MPI_Barrier(MPI_COMM_WORLD);
-
     send_size = atoi(argv[1]);
     // double send_time=atof(argv[1]);
     // loop_len=atoi(argv[2]);

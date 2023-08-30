@@ -1,5 +1,5 @@
 #pragma once
-#include "dbg.h"
+//#include "dbg.h"
 #include <cassert>
 #include <exception>
 #include <functional>
@@ -74,6 +74,12 @@ template <typename T> std::string vecToString(const std::vector<T> &vec) {
         ret.pop_back();
     ret.append("]");
     return ret;
+}
+
+static __inline__ unsigned long long rdtsc() {
+    unsigned hi, lo;
+    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
+    return ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
 }
 
 } // namespace vapro
